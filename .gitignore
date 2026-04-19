@@ -1,4 +1,4 @@
-# 编译产物
+# C++ 编译产物
 *.o
 *.out
 *.exe
@@ -8,9 +8,15 @@
 build/
 bin/
 
-# IDE
+# 系统文件
+.DS_Store
+._*
+Thumbs.db
+
+# 编辑器与 IDE
 .vscode/
 .idea/
 *.swp
+*.swo
 *~
-.DS_Store
+\#*\#
