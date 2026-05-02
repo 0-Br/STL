@@ -50,7 +50,7 @@ struct binode
         if (has_lc())
         {
             x = lc;
-            while (x -> has_rc()) x = x -> lc;
+            while (x -> has_rc()) x = x -> rc;
         }
         else
         {
