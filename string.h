@@ -59,7 +59,7 @@ inline int* build_BC(char *P)
 {
     int *bc = new int[256]; // 字符集更大的时候需要考虑使用Bitmap
     for (int j = 0; j < 256; j++) bc[j] = -1;
-    for (int m = strlen(P), j = 0; j < m; j++) bc[(int)P[j]] = j;
+    for (int m = strlen(P), j = 0; j < m; j++) bc[(unsigned char)P[j]] = j;
     return bc;
 }
 
@@ -76,7 +76,7 @@ inline int match_BM(char *P, char *T)
         int j = m - 1;
         while (P[j] == T[i + j]) if (--j < 0) break;
         if (j < 0) break;
-        else i += (1 > (j - bc[(int)T[i + j]])) ? 1 : (j - bc[(int)T[i + j]]);
+        else i += (1 > (j - bc[(unsigned char)T[i + j]])) ? 1 : (j - bc[(unsigned char)T[i + j]]);
     }
     delete[] bc;
     return i;

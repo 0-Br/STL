@@ -272,12 +272,12 @@ protected:
     binode<T>* connect_34(binode<T> *a, binode<T> *b, binode<T> *c, binode<T> *T0, binode<T> *T1, binode<T> *T2, binode<T> *T3)
     {
         attach_l(T0, a); attach_r(a, T1);
-        Bitree<T>::update(a);
+        this -> update(a); // 经this调用，以便派生类的重写update生效（红黑树维护的是黑高度）
         attach_l(T2, c); attach_r(c, T3);
-        Bitree<T>::update(c);
+        this -> update(c);
         b -> lc = a; a -> parent = b;
         b -> rc = c; c -> parent = b;
-        Bitree<T>::update(b);
+        this -> update(b);
         return b;
     }
 
@@ -368,6 +368,11 @@ protected:
     }
 
 public:
+    // 只读接口沿用二叉树
+    using Bitree<T>::size;
+    using Bitree<T>::empty;
+    using Bitree<T>::trav_in;
+
     // 返回游标
     binode<T>* hot(){return _hot;}
 
@@ -463,6 +468,11 @@ private:
     }
 
 public:
+    // 只读接口沿用二叉搜索树
+    using BST<T>::size;
+    using BST<T>::empty;
+    using BST<T>::trav_in;
+
     // 查找方法不变
     binode<T>*& search(const T& e){return BST<T>::search(e);}
 
@@ -581,6 +591,11 @@ private:
     }
 
 public:
+    // 只读接口沿用二叉搜索树
+    using BST<T>::size;
+    using BST<T>::empty;
+    using BST<T>::trav_in;
+
     // 重写查找方法
     // 采用二分搜索，在搜索中会进行伸展，修改树的结构
     // 总是返回根节点
@@ -619,7 +634,8 @@ public:
             }
         }
         Bitree<T>::_size++;
-        Bitree<T>::update(x);
+        Bitree<T>::_head -> rc = Bitree<T>::_root; // 换根后须同步保护节点
+        Bitree<T>::update(x); Bitree<T>::update(Bitree<T>::_root);
         return Bitree<T>::_root;
     }
 
@@ -663,9 +679,9 @@ private:
     // 高度更新条件
     bool heightUpdated(binode<T> *x)
     {
-        if (stature(x -> lc) == stature(x -> rc)) return true;
-        if (x -> height == (is_red(x) ? stature(x -> lc) : stature(x -> lc) + 1)) return true;
-        return false;
+        if (stature(x -> lc) != stature(x -> rc)) return false;
+        if (x -> height != (is_red(x) ? stature(x -> lc) : stature(x -> lc) + 1)) return false;
+        return true;
     }
 
     // 重写
@@ -679,7 +695,7 @@ private:
     // 勤奋策略，及时更新
     void update(binode<T> *x)
     {
-        x -> height = (int)is_black(x) + (stature(x -> lc) > stature(x -> rc)) ? stature(x -> lc) : stature(x -> rc);
+        x -> height = ((stature(x -> lc) > stature(x -> rc)) ? stature(x -> lc) : stature(x -> rc)) + (int)is_black(x);
     }
 
     // 双红修正
@@ -717,7 +733,7 @@ private:
     {
         binode<T> *p = (r) ? r -> parent : BST<T>::_hot;
         if (!p) return;
-        binode<T> *s = r -> sibling();
+        binode<T> *s = (r == p -> lc) ? p -> rc : p -> lc; // r可能是外部节点，兄弟须经父亲反查
         if (is_black(s))
         {
             binode<T> *t = NULL;
@@ -740,7 +756,7 @@ private:
         }
         else // BB-3
         {
-            s -> color = true; p -> color = true;
+            s -> color = true; p -> color = false; // s转黑，p转红
             binode<T> *t = (s -> is_lc()) ? s -> lc : s -> rc;
             BST<T>::_hot = p; Bitree<T>::from(p) = BST<T>::rotateAt(t);
             solveDB(r);
@@ -748,6 +764,11 @@ private:
     }
 
 public:
+    // 只读接口沿用二叉搜索树
+    using BST<T>::size;
+    using BST<T>::empty;
+    using BST<T>::trav_in;
+
     // 查找方法不变
     binode<T>*& search(const T& e){return BST<T>::search(e);}
 

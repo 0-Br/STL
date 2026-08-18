@@ -77,6 +77,10 @@ inline Rank encode(char s[])
     return re0;
 }
 
+// 关键码比对
+// 与encode配套，字符串按内容比对，而非按地址
+inline bool is_equal(char s[], char t[]){return !strcmp(s, t);}
+
 // 哈希表模板类
 template <typename K, typename V>
 class Hashtable
@@ -92,7 +96,7 @@ protected:
     Rank probe4Hit(const K& key) const
     {
         Rank r = encode(key) % M;
-        while (ht[r] && (key != ht[r] -> key) || removed -> test(r)) r = (r + 1) % M;
+        while ((ht[r] && !is_equal(key, ht[r] -> key)) || (!ht[r] && removed -> test(r))) r = (r + 1) % M;
         return r;
     }
     Rank probe4Free(const K& key)

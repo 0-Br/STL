@@ -315,6 +315,7 @@ public:
     // 只允许对递增向量使用
     Rank uniquify()
     {
+        if (_size < 2) return 0; // 排除平凡情况
         Rank i = 0, j = 0;
         while (++j < _size) // 采用双指针法提高效率
         {
@@ -472,6 +473,7 @@ public:
     // 基于数组区间[lo, hi)构造一个堆
     Heap(const T *source, Rank lo, Rank hi)
     {
+        delete[] Vector<T>::_elem; // 默认构造已分配数据区，须先释放再接管新的数据区
         Vector<T>::copyfrom(source, lo, hi);
         heapify(0, Vector<T>::_size);
     }
