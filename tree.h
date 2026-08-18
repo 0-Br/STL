@@ -1,3 +1,6 @@
+#pragma once
+
+#include <cstddef>
 #include "utils.h"
 
 // 二叉树的节点结构体
@@ -95,7 +98,7 @@ struct binode
     binode<T>* uncle()
     {
         if (is_root()) return NULL;
-        return sibling(parent);
+        return parent -> sibling(); // 叔父即父亲的兄弟
     }
 };
 
@@ -669,10 +672,9 @@ private:
     // 更新节点x的高度
     // 红黑树中，不维护子树规模，也禁止使用秩相关的接口
     // 勤奋策略，及时更新
-    int update(binode<T> *x)
+    void update(binode<T> *x)
     {
         x -> height = (int)is_black(x) + (stature(x -> lc) > stature(x -> rc)) ? stature(x -> lc) : stature(x -> rc);
-        return x -> height;
     }
 
     // 双红修正
@@ -683,10 +685,10 @@ private:
             x -> color = true; (x -> height)++;
             return;
         }
-        binode<T> p = x -> parent;
+        binode<T> *p = x -> parent;
         if (is_black(p)) return; // 若父节点为黑，无需修正
-        binode<T> g = p -> parent;
-        binode<T> u = x -> uncle();
+        binode<T> *g = p -> parent;
+        binode<T> *u = x -> uncle();
         if (is_black(u))
         {
             if ((x -> is_lc()) == (p -> is_lc())) p -> color = true;
@@ -762,7 +764,7 @@ public:
     {
         binode<T>*& x = search(e);
         if (!x) return false;
-        binode<T> *r = BST<T>::removeAt(x, BST<T>::_hot);
+        binode<T> *r = BST<T>::removeAt(x); // removeAt 内部已设置 _hot
         Bitree<T>::_size--; if (!Bitree<T>::_size) return true;
         if (!BST<T>::_hot)
         {

@@ -1,3 +1,5 @@
+#pragma once
+
 template <typename T>
 struct Cleaner
 {
@@ -40,9 +42,9 @@ struct Tuple
     T2 elem_2;
 
     // 默认构造
-    Entry(T1 e1 = T1(), T2 e2 = T2()) : elem_1(e1), elem_2(e2){};
+    Tuple(T1 e1 = T1(), T2 e2 = T2()) : elem_1(e1), elem_2(e2){};
     // 复制构造
-    Entry(const Tuple<T1, T2>& t) : elem_1(t.elem_1), elem_2(t.elem_2){};
+    Tuple(const Tuple<T1, T2>& t) : elem_1(t.elem_1), elem_2(t.elem_2){};
 
     // 重载比较运算符
     bool operator< (const Tuple<T1, T2>& t) const

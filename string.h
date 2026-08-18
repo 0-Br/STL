@@ -1,12 +1,13 @@
+#pragma once
 #include <cstring>
 #include "utils.h"
 
 // 检查字符串是否匹配成功
-bool is_match(char *P, char *T, int i){return (strlen(T) >= i + strlen(P));}
+inline bool is_match(char *P, char *T, int i){return (strlen(T) >= i + strlen(P));}
 
 // 字符串匹配算法，返回最终的匹配位置
 // 蛮力算法
-int match_BF(char *P, char *T)
+inline int match_BF(char *P, char *T)
 {
     int n = strlen(T), i; // 文本串长度和当前比对位置
     int m = strlen(P), j; // 模式串长度和当前比对位置
@@ -19,7 +20,7 @@ int match_BF(char *P, char *T)
 }
 
 // 对模式串P构建next表
-int* build_Next(char *P)
+inline int* build_Next(char *P)
 {
     int m = strlen(P), j = 0;
     int *next = new int[m];
@@ -38,7 +39,7 @@ int* build_Next(char *P)
 
 // 字符串匹配算法，返回最终的匹配位置
 // KMP算法
-int match_KMP(char *P, char *T)
+inline int match_KMP(char *P, char *T)
 {
     int *next = build_Next(P);
     int n = strlen(T), i = 0; // 文本串长度和当前比对位置
@@ -54,7 +55,7 @@ int match_KMP(char *P, char *T)
 
 // 对模式串构建Bad Charactor Shift表
 // 画家算法
-int* build_BC(char *P)
+inline int* build_BC(char *P)
 {
     int *bc = new int[256]; // 字符集更大的时候需要考虑使用Bitmap
     for (int j = 0; j < 256; j++) bc[j] = -1;
@@ -65,7 +66,7 @@ int* build_BC(char *P)
 // 字符串匹配算法，返回最终的匹配位置
 // BM算法
 // 可使用GS表进一步优化
-int match_BM(char *P, char *T)
+inline int match_BM(char *P, char *T)
 {
     int *bc = build_BC(P);
     int n = strlen(T), i = 0;

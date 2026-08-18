@@ -1,3 +1,4 @@
+#pragma once
 #include "utils.h"
 #define DEFAULT_CAPACITY 1024 // 默认初始容量设为1024
 #define Rank unsigned int // 秩为无符号整型
@@ -141,7 +142,7 @@ public:
     }
 
     // 重载==运算符
-    bool operator== const(const Vector<T>& V)
+    bool operator==(const Vector<T>& V) const
     {
         if (_size != V._size) return false;
         else
@@ -154,7 +155,7 @@ public:
         return true;
     }
     // 重载!=运算符
-    bool operator!= const(const Vector<T>& V)
+    bool operator!=(const Vector<T>& V) const
     {
         if (_size != V._size) return true;
         else
@@ -169,9 +170,9 @@ public:
 
     // 重载<运算符
     // 先大即大，先长即大
-    bool operator< const(const Vector<T>& V)
+    bool operator<(const Vector<T>& V) const
     {
-        for (Rank i; (i < _size) && (i < V._size); i++)
+        for (Rank i = 0; (i < _size) && (i < V._size); i++)
         {
             if (_elem[i] < V._elem[i]) return true;
             if (_elem[i] > V._elem[i]) return false;
@@ -182,9 +183,9 @@ public:
     }
     // 重载>运算符
     // 先大即大，先长即大
-    bool operator> const(const Vector<T>& V)
+    bool operator>(const Vector<T>& V) const
     {
-        for (Rank i; (i < _size) && (i < V._size); i++)
+        for (Rank i = 0; (i < _size) && (i < V._size); i++)
         {
             if (_elem[i] > V._elem[i]) return true;
             if (_elem[i] < V._elem[i]) return false;
@@ -196,20 +197,22 @@ public:
 
     // 重载+运算符
     // 只允许对两相同规模的向量使用
-    Vector<T> operator+ const(const Vector<T>& V)
+    Vector<T> operator+(const Vector<T>& V) const
     {
         T* array = new T[_size];
-        for (Rank i; i < _size; i++) array[i] = _elem[i] + V._elem[i];
+        for (Rank i = 0; i < _size; i++) array[i] = _elem[i] + V._elem[i];
         Vector<T> newV(array, 0, _size);
+        delete[] array;
         return newV;
     }
     // 重载-运算符
     // 只允许对两相同规模的向量使用
-    Vector<T> operator- const(const Vector<T>& V)
+    Vector<T> operator-(const Vector<T>& V) const
     {
         T* array = new T[_size];
-        for (Rank i; i < _size; i++) array[i] = _elem[i] - V._elem[i];
+        for (Rank i = 0; i < _size; i++) array[i] = _elem[i] - V._elem[i];
         Vector<T> newV(array, 0, _size);
+        delete[] array;
         return newV;
     }
 
@@ -217,13 +220,13 @@ public:
     // 只允许对两相同规模的向量使用
     void operator+= (const Vector<T>& V)
     {
-        for (Rank i; i < _size; i++) _elem[i] += V._elem[i];
+        for (Rank i = 0; i < _size; i++) _elem[i] += V._elem[i];
     }
     // 重载-=运算符
     // 只允许对两相同规模的向量使用
     void operator-= (const Vector<T>& V)
     {
-        for (Rank i; i < _size; i++) _elem[i] -= V._elem[i];
+        for (Rank i = 0; i < _size; i++) _elem[i] -= V._elem[i];
     }
 
     // 遍历接口

@@ -1,3 +1,6 @@
+#pragma once
+
+#include <cstddef>
 #include "utils.h"
 #define Rank unsigned int // 秩为无符号整型
 
@@ -111,13 +114,15 @@ public:
     }
 
     // 报告当前列表的规模
-    Rank size(){return _size;}
+    Rank size() const{return _size;}
     // 返回首位指针
     listnode<T>* first(){return header -> succ;}
+    const listnode<T>* first() const{return header -> succ;}
     // 返回末位指针
     listnode<T>* last(){return trailer -> pred;}
+    const listnode<T>* last() const{return trailer -> pred;}
     // 判断列表是否为空
-    bool empty(){return !_size;}
+    bool empty() const{return !_size;}
 
     // 获得一个指向秩为r的元素的指针
     // 按mod取秩，效率不高，慎用
@@ -126,6 +131,13 @@ public:
         r = r % _size;
         if (r < 0) r += _size;
         listnode<T> *p = first();
+        for (Rank i = 0; i < r; i++) p = p -> succ;
+        return p;
+    }
+    const listnode<T>* gp(Rank r) const
+    {
+        r = r % _size;
+        const listnode<T> *p = first();
         for (Rank i = 0; i < r; i++) p = p -> succ;
         return p;
     }
@@ -304,30 +316,32 @@ public:
     Stack(){};
 
     // 访问栈顶，为只读接口
-    const T& top() const{return (List<T>::first() -> data);}
+    // 底层列表追加在尾部，故栈顶为 last()
+    const T& top() const{return (List<T>::last() -> data);}
     // 获取栈中的最大元素，只读
-    const T& getMax() const{return (pair_p[0]);}
+    // pair_p 为递增的最大值栈，栈顶即当前最大值
+    const T& getMax() const{return (pair_p.last() -> data);}
     // 入栈
     void push(const T& e)
     {
-        if ((pair_p.size() == 0) || (e > pair_p[0]))
+        if ((pair_p.size() == 0) || (e > pair_p.last() -> data))
         {
             pair_p.insert(e);
             pair_r.insert(1);
         }
-        else pair_r[0]++;
+        else (pair_r.last() -> data)++;
         List<T>::insert(e);
     }
     // 出栈
     T pop()
     {
-        pair_r[0]--;
-        if (pair_r.first() -> data == 0)
+        (pair_r.last() -> data)--;
+        if (pair_r.last() -> data == 0)
         {
-            pair_p.remove(pair_p.first());
-            pair_r.remove(pair_r.first());
+            pair_p.remove(pair_p.last());
+            pair_r.remove(pair_r.last());
         }
-        return List<T>::remove(List<T>::first());
+        return List<T>::remove(List<T>::last());
     }
 };
 
