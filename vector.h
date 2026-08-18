@@ -110,6 +110,15 @@ public:
 
     // 析构函数
     ~Vector(){delete[] _elem;}
+    // 赋值运算符（持有裸内存，须深复制）
+    Vector<T>& operator= (const Vector<T>& source)
+    {
+        if (this == &source) return *this;
+        delete[] _elem;
+        copyfrom(source._elem, 0, source._size);
+        return *this;
+    }
+
 
     // 报告当前向量的规模
     Rank size(){return _size;}

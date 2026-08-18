@@ -16,7 +16,7 @@ struct binode
     bool color; // 节点颜色，红0黑1，仅在红黑树中维护
 
     // 默认构造函数
-    binode() : parent(NULL), lc(NULL), rc(NULL), height(0), size(1), color(false){};
+    binode() : data(), parent(NULL), lc(NULL), rc(NULL), height(0), size(1), color(false){};
     // 初始化构造函数
     binode(T e, binode<T> *parent = NULL, binode<T> *lc = NULL, binode<T> *rc = NULL, int height = 0, int size = 1, bool color = false)
         : data(e), parent(parent), lc(lc), rc(rc), height(height), size(size), color(color){};
@@ -187,6 +187,11 @@ public:
         if (!empty()) remove(_root);
         release(_head -> data); release(_head);
     }
+
+    // 本类持有整棵树的节点内存且未提供深复制，故禁止拷贝
+    // （默认浅拷贝会使两个对象二次释放同一批节点）
+    Bitree(const Bitree<T>&) = delete;
+    Bitree<T>& operator= (const Bitree<T>&) = delete;
 
     // 报告当前树的规模
     int size(){return _size;}
@@ -753,6 +758,7 @@ public:
         binode<T> *& x = search(e);
         if (x) return x;
         x = new binode<T>(e, BST<T>::_hot);
+        if (Bitree<T>::empty()) Bitree<T>::_root = x; // 空树时 search 返回的是 _head->rc，须另行设根
         Bitree<T>::_size++;
         binode<T> *x_old = x; solveDR(x);
         return x_old;

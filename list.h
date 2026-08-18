@@ -13,7 +13,7 @@ struct listnode
     listnode<T> *succ; // 指向后继
 
     // 默认构造函数
-    listnode(){};
+    listnode() : data(){};
     // 节点的初始化构造函数，默认前后均为NULL
     listnode(T e, listnode<T> *p = NULL, listnode<T> *s = NULL) : data(e), pred(p), succ(s){};
 
@@ -97,12 +97,26 @@ public:
     List(const List<T>& source)
     {
         init();
-        listnode<T> *p_source = source.first();
+        const listnode<T> *p_source = source.first();
         for (Rank i = 0; i < source._size; i++)
         {
             insert(p_source -> data);
             p_source = p_source -> succ;
         }
+    }
+
+    //赋值运算符（持有节点内存，须深复制）
+    List<T>& operator= (const List<T>& source)
+    {
+        if (this == &source) return *this;
+        clear();
+        const listnode<T> *p_source = source.first();
+        for (Rank i = 0; i < source._size; i++)
+        {
+            insert(p_source -> data);
+            p_source = p_source -> succ;
+        }
+        return *this;
     }
 
     //析构函数
